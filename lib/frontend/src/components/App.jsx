@@ -27,9 +27,9 @@ export default class App extends React.PureComponent {
     return (
       <main className={b}>
         <Helmet>
-          <title>Apparatus site</title>
+          <title>ZikoZ site</title>
         </Helmet>
-        <h1 className={b.e('main-title')}>Apparatus!</h1>
+        <h1 className={b.e('main-title')}>ZikoZ!</h1>
         <nav className={b.e('menu')}>
           <Link className={b.e('link')} exact to="/">
             Home
