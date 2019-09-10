@@ -1,0 +1,65 @@
+variables:
+  PYTHON_VERSION: python
+  STAGING: y
+
+stages:
+  - install
+  - build
+  - test
+  - deploy_test
+
+.artifacts: &artifacts_install
+  artifacts:
+    paths:
+      - node_modules/
+      - .venv/
+
+.artifacts: &artifacts_build
+  artifacts:
+    paths:
+      - lib/frontend/static/
+      - node_modules/
+      - .venv/
+
+image: paradoxxxzero/python-node-yarn-postgresql:latest
+
+install_latest:
+  stage: install
+  script:
+    - pip install pipenv
+    - make install
+  <<: *artifacts_install
+
+build_latest:
+  stage: build
+  script: make build
+  <<: *artifacts_build
+  dependencies:
+    - install_latest
+
+lint_latest:
+  stage: test
+  script:
+    - pip install pipenv
+    - make lint
+  dependencies:
+    - build_latest
+
+test_latest:
+  stage: test
+  script:
+    - pip install pipenv
+    - make check
+  dependencies:
+    - build_latest
+
+
+.image: &image_deploy_jobs
+  image: grewn0uille/deploy-tools:latest
+
+deploy_test:
+  <<: *image_deploy_jobs
+  stage: deploy_test
+  script:
+    - make deploy-test
+  dependencies: []
