@@ -2,23 +2,34 @@ import './Home.sass'
 
 import block from 'bemboo'
 import React from 'react'
+import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
 
+import Playlist from './Playlist'
+
 @withRouter
+@connect(state => ({ playlists: state.playlists }))
 @block
 export default class Home extends React.PureComponent {
   render(b) {
-    const { history } = this.props
+    const { playlists } = this.props
+
+    const listPlaylists = playlists.map(playlist => (
+      <Playlist
+        key={playlist.id}
+        name={playlist.name}
+        author={playlist.author}
+      />
+    ))
+
     return (
       <section className={b}>
         <Helmet>
-          <title>It’s feels like home</title>
+          <title>ZikoZ - Home</title>
         </Helmet>
-        <h2 className={b.e('title')}>Home</h2>
-        <button onClick={() => history.push('/date')}>
-          Go to the date page with a button !
-        </button>
+        <h2 className={b.e('title')}>Playlists</h2>
+        {listPlaylists}
       </section>
     )
   }
