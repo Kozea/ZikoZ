@@ -1,19 +1,33 @@
+import './Playlist.sass'
+
 import React from 'react'
+import block from 'bemboo'
 
+@block
 export default class Playlist extends React.PureComponent {
-  constructor(props) {
-    super(props)
-    this.playlist = 'My Playlist'
-  }
+  render(b) {
+    const { name, author, tunes } = this.props
+    var tunesList
 
-  render() {
-    const { name, author } = this.props
+    if (!tunes) {
+      tunesList = null
+    } else {
+      tunesList = tunes.map(tune => (
+        <div key={tunes.indexOf(tune)}>
+          {tune.artist} {tune.title}{' '}
+          <a href={tune.url} target="_blank" rel="noopener noreferrer">
+            Listen
+          </a>
+        </div>
+      ))
+    }
 
     return (
-      <div>
-        <p>
+      <div className={b.e('playlist')}>
+        <h3>
           {name} by {author}
-        </p>
+        </h3>
+        <div>{tunesList}</div>
       </div>
     )
   }

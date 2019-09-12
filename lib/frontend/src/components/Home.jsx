@@ -15,13 +15,25 @@ export default class Home extends React.PureComponent {
   render(b) {
     const { playlists } = this.props
 
-    const listPlaylists = playlists.map(playlist => (
-      <Playlist
-        key={playlist.id}
-        name={playlist.name}
-        author={playlist.author}
-      />
-    ))
+    const listPlaylists = playlists.map(function(playlist) {
+      if (!playlist.tunes) {
+        return (
+          <Playlist
+            key={playlists.indexOf(playlist)}
+            name={playlist.name}
+            author={playlist.author}
+          />
+        )
+      }
+      return (
+        <Playlist
+          key={playlists.indexOf(playlist)}
+          name={playlist.name}
+          author={playlist.author}
+          tunes={playlist.tunes}
+        />
+      )
+    })
 
     return (
       <section className={b}>
@@ -29,7 +41,7 @@ export default class Home extends React.PureComponent {
           <title>ZikoZ - Home</title>
         </Helmet>
         <h2 className={b.e('title')}>Playlists</h2>
-        {listPlaylists}
+        <div className={b.e('playlists')}>{listPlaylists}</div>
       </section>
     )
   }
