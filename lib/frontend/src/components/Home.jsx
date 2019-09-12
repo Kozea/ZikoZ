@@ -19,7 +19,8 @@ export default class Home extends React.PureComponent {
       if (!playlist.tunes) {
         return (
           <Playlist
-            key={playlists.indexOf(playlist)}
+            key={playlist.id}
+            id={playlist.id}
             name={playlist.name}
             author={playlist.author}
           />
@@ -27,7 +28,8 @@ export default class Home extends React.PureComponent {
       }
       return (
         <Playlist
-          key={playlists.indexOf(playlist)}
+          key={playlist.id}
+          id={playlist.id}
           name={playlist.name}
           author={playlist.author}
           tunes={playlist.tunes}
