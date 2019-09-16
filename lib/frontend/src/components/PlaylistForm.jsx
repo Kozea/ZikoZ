@@ -23,6 +23,7 @@ export default class PlaylistForm extends React.PureComponent {
     this.state = { fieldsId: [] }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleAddClick = this.handleAddClick.bind(this)
+    this.handleRemoveField = this.handleRemoveField.bind(this)
   }
 
   handleSubmit(e) {
@@ -33,7 +34,14 @@ export default class PlaylistForm extends React.PureComponent {
 
   handleAddClick() {
     const { fieldsId } = this.state
-    this.setState({ fields: this.state.fieldsId.push(fieldsId.length) })
+    const lastId = fieldsId[fieldsId.length - 1]
+    const newFieldId = lastId || lastId === 0 ? lastId + 1 : 0
+    this.setState({ fieldsId: [...fieldsId, newFieldId] })
+  }
+
+  handleRemoveField(id) {
+    const { fieldsId } = this.state
+    this.setState({ fieldsId: [...fieldsId].filter(field => field !== id) })
   }
 
   render(b) {
@@ -55,6 +63,16 @@ export default class PlaylistForm extends React.PureComponent {
           >
             Link:
           </Field>
+          <div className={b.e('remove-container')}>
+            <hr />
+            <hr />
+            <p
+              className={b.e('remove')}
+              onClick={() => this.handleRemoveField(fieldId)}
+            >
+              remove
+            </p>
+          </div>
         </Inliner>
       </div>
     ))
@@ -64,15 +82,19 @@ export default class PlaylistForm extends React.PureComponent {
         <Helmet>
           <title>ZikoZ - Create</title>
         </Helmet>
-        <h2 className={b.e('title')}>Create a playlist</h2>
-        <Formol item={{}} onSubmit={this.handleSubmit} submitText="Create">
-          <Field name="author">Your Name:</Field>
-          <Field name="name">Playlist name:</Field>
-          {fieldsList}
-          <button type="button" onClick={this.handleAddClick}>
-            Add tune
-          </button>
-        </Formol>
+        <div className={b.e('container')}>
+          <h2 className={b.e('title')}>Create a playlist</h2>
+        </div>
+        <div className={b.e('container')}>
+          <Formol item={{}} onSubmit={this.handleSubmit} submitText="Create">
+            <Field name="author">Your Name:</Field>
+            <Field name="name">Playlist name:</Field>
+            {fieldsList}
+            <p className={b.e('add')} onClick={this.handleAddClick}>
+              Add tune
+            </p>
+          </Formol>
+        </div>
       </section>
     )
   }

@@ -42,7 +42,9 @@ export default class Home extends React.PureComponent {
         <Helmet>
           <title>ZikoZ - Home</title>
         </Helmet>
-        <h2 className={b.e('title')}>Playlists</h2>
+        <div className={b.e('container')}>
+          <h2 className={b.e('title')}>Playlists</h2>
+        </div>
         <div className={b.e('playlists')}>{listPlaylists}</div>
       </section>
     )

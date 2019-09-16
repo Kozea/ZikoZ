@@ -1,45 +1,48 @@
-$formol-color: #222
-$formol-color-action: pink
-
+$formol-color: #FF242F
+$formol-background-color: rgba($formol-color, .01)
+$formol-color-error: #FF242F
+  
 @import ~formol/src/sass/clean
 
+  
 html, body, #root
   margin: 0
   padding: 0
   width: 100vw
   min-height: 100vh
+  background: white
 
 
 nav
-  background-color: #C7C4F8
-  padding: 2rem 0 2rem 0
+  background-color: #F4FF24
 
 
 .App
   width: 100vw
   min-height: 100vh
-  background: #FFF9F1
   margin: 0
-  padding: 2em
   box-sizing: border-box
 
   &__main-title
     color: black
-    margin-left: auto
-    margin-rigth: auto
+    text-align: center
     width: 100vw
 
 
   &__menu
     display: flex
-    // justify-content: space-between
+    justify-content: space-around
 
   &__link
     color: black
-    margin: 0 5rem 0 5rem
     text-decoration: none
-    &.active
+    height: 100%
+    padding: 2rem
+    
+
+    &:active
       text-decoration: none
       color: orangered
-    &.hover
-      background-color: #C7C4F8
+    &:hover
+      background-color: #F9FF81
+

@@ -50,7 +50,7 @@ export default class Playlist extends React.PureComponent {
         </h3>
         <div>{tunesList}</div>
         <div className={b.e('options')}>
-          <button className={b.e('link')} onClick={this.handleDelete}>
+          <button className={b.e('delete')} onClick={this.handleDelete}>
             Delete
           </button>
         </div>
