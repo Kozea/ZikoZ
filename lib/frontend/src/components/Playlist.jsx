@@ -3,13 +3,14 @@ import './Playlist.sass'
 import React from 'react'
 import block from 'bemboo'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { deletePlaylist } from '../actions/index'
 
 @connect(
   null,
   dispatch => ({
-    deletePlaylist: playlist => dispatch(deletePlaylist(playlist)),
+    onDeletePlaylist: playlist => dispatch(deletePlaylist(playlist)),
   })
 )
 @block
@@ -21,8 +22,8 @@ export default class Playlist extends React.PureComponent {
 
   handleDelete() {
     const idTarget = this.props.id
-    const { deletePlaylist } = this.props
-    deletePlaylist(idTarget)
+    const { onDeletePlaylist } = this.props
+    onDeletePlaylist(idTarget)
   }
 
   render(b) {
@@ -30,18 +31,18 @@ export default class Playlist extends React.PureComponent {
     var tunesList
 
     if (!tunes) {
-      tunesList = null
-    } else {
-      tunesList = tunes.map(tune => (
-        <div key={tunes.indexOf(tune)}>
-          {tune.artist} - {tune.title}
-          {' - '}
-          <a href={tune.url} target="_blank" rel="noopener noreferrer">
-            Listen
-          </a>
-        </div>
-      ))
+      tunesList = []
     }
+
+    tunesList = tunes.map(tune => (
+      <div key={tunes.indexOf(tune)}>
+        {tune.artist} - {tune.title}
+        {' - '}
+        <a href={tune.url} target="_blank" rel="noopener noreferrer">
+          Listen
+        </a>
+      </div>
+    ))
 
     return (
       <div className={b.e('playlist')}>
@@ -50,9 +51,12 @@ export default class Playlist extends React.PureComponent {
         </h3>
         <div>{tunesList}</div>
         <div className={b.e('options')}>
-          <button className={b.e('delete')} onClick={this.handleDelete}>
+          <Link to={`/edit-playlist/${this.props.id}`} className={b.e('edit')}>
+            Edit
+          </Link>
+          <span className={b.e('delete')} onClick={this.handleDelete}>
             Delete
-          </button>
+          </span>
         </div>
       </div>
     )

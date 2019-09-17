@@ -6,9 +6,6 @@ import { Helmet } from 'react-helmet'
 import { Route, Switch } from 'react-router-dom'
 
 import { Redirect } from '../utils'
-// import Async from './Async'
-// import Dates from './Dates'
-// import Db from './Db'
 import Home from './Home'
 import NotFound from './NotFound'
 import Link from './utils/Link'
@@ -42,6 +39,7 @@ export default class App extends React.PureComponent {
           <Redirect status={303} from="/old/date" to="/date" />
           <Route exact path="/" component={Home} />
           <Route path="/add-playlist" component={PlaylistForm} />
+          <Route path="/edit-playlist/:id" component={PlaylistForm} />
           <Route component={NotFound} />
         </Switch>
       </main>

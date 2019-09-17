@@ -3,79 +3,68 @@ import './PlaylistForm.sass'
 import block from 'bemboo'
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Formol, { Field, Inliner } from 'formol'
+import Formol, { Field } from 'formol'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 
-import { createPlaylist } from '../actions/index'
+import { createPlaylist, editPlaylist, addTune } from '../actions/index'
+import TuneField from './TuneField'
 
 @withRouter
 @connect(
-  null,
+  state => ({
+    playlists: state.playlists,
+  }),
   dispatch => ({
-    createPlaylist: playlist => dispatch(createPlaylist(playlist)),
+    onCreatePlaylist: playlist => dispatch(createPlaylist(playlist)),
+    onEditPlaylist: playlist => dispatch(editPlaylist(playlist)),
+    onAddTune: playlist => dispatch(addTune(playlist)),
   })
 )
 @block
 export default class PlaylistForm extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { fieldsId: [] }
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleAddClick = this.handleAddClick.bind(this)
-    this.handleRemoveField = this.handleRemoveField.bind(this)
+    this.handleAddField = this.handleAddField.bind(this)
+    this.setPlaylistId = this.setPlaylistId.bind(this)
   }
 
-  handleSubmit(e) {
-    const { createPlaylist } = this.props
-    createPlaylist(e)
-    this.props.history.push('/')
+  setPlaylistId() {
+    const { playlists } = this.props
+    const id = playlists.length ? playlists.slice(-1)[0].id + 1 : 0
+    return id
   }
 
-  handleAddClick() {
-    const { fieldsId } = this.state
-    const lastId = fieldsId[fieldsId.length - 1]
-    const newFieldId = lastId || lastId === 0 ? lastId + 1 : 0
-    this.setState({ fieldsId: [...fieldsId, newFieldId] })
+  handleSubmit(item) {
+    const { onCreatePlaylist, onEditPlaylist } = this.props
+    if (item.id) {
+      onEditPlaylist(item)
+      this.props.history.push('/')
+    } else {
+      item.id = this.setPlaylistId()
+      item.tunes = []
+      onCreatePlaylist(item)
+      this.props.history.push(`/edit-playlist/${item.id}`)
+    }
   }
 
-  handleRemoveField(id) {
-    const { fieldsId } = this.state
-    this.setState({ fieldsId: [...fieldsId].filter(field => field !== id) })
+  handleAddField(item) {
+    const { onAddTune } = this.props
+    onAddTune(item)
   }
 
   render(b) {
-    const { fieldsId } = this.state
+    const {
+      playlists,
+      match: {
+        params: { id },
+      },
+    } = this.props
 
-    const fieldsList = fieldsId.map(fieldId => (
-      <div key={fieldId}>
-        <Inliner>
-          <Field name={`tunes.${fieldId}.artist`}>Artist:</Field>
-          <Field name={`tunes.${fieldId}.title`}>Title:</Field>
-          <Field
-            name={`tunes.${fieldId}.url`}
-            pattern="http(s)?:\/\/.+"
-            validityErrors={patternMismatch => {
-              if (patternMismatch) {
-                return 'This is not a correct URL.'
-              }
-            }}
-          >
-            Link:
-          </Field>
-          <div className={b.e('remove-container')}>
-            <hr />
-            <hr />
-            <p
-              className={b.e('remove')}
-              onClick={() => this.handleRemoveField(fieldId)}
-            >
-              remove
-            </p>
-          </div>
-        </Inliner>
-      </div>
-    ))
+    const item = id
+      ? playlists.find(playlist => playlist.id === parseInt(id))
+      : {}
 
     return (
       <section className={b}>
@@ -86,13 +75,33 @@ export default class PlaylistForm extends React.PureComponent {
           <h2 className={b.e('title')}>Create a playlist</h2>
         </div>
         <div className={b.e('container')}>
-          <Formol item={{}} onSubmit={this.handleSubmit} submitText="Create">
-            <Field name="author">Your Name:</Field>
+          <Formol
+            item={item}
+            onSubmit={this.handleSubmit}
+            submitText={id ? 'Validate' : 'Create'}
+          >
+            <Field name="id" hidden />
+            <Field name="author" required>
+              Your Name:
+            </Field>
             <Field name="name">Playlist name:</Field>
-            {fieldsList}
-            <p className={b.e('add')} onClick={this.handleAddClick}>
-              Add tune
-            </p>
+            {Object.keys(item).length
+              ? item.tunes.map(tune => (
+                  <TuneField
+                    key={tune.id}
+                    tuneId={tune.id}
+                    playlistId={item.id}
+                  />
+                ))
+              : null}
+            {id ? (
+              <p
+                className={b.e('add')}
+                onClick={() => this.handleAddField(item)}
+              >
+                Add tune
+              </p>
+            ) : null}
           </Formol>
         </div>
       </section>
