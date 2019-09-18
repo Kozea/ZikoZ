@@ -33,8 +33,12 @@ export default class TuneField extends React.PureComponent {
       <div>
         <Inliner>
           <Field name={`tunes.${tuneId}.id`} hidden />
-          <Field name={`tunes.${tuneId}.artist`}>Artist:</Field>
-          <Field name={`tunes.${tuneId}.title`}>Title:</Field>
+          <Field name={`tunes.${tuneId}.artist`} required>
+            Artist:
+          </Field>
+          <Field name={`tunes.${tuneId}.title`} required>
+            Title:
+          </Field>
           <Field
             name={`tunes.${tuneId}.url`}
             pattern="http(s)?:\/\/.+"
@@ -43,6 +47,7 @@ export default class TuneField extends React.PureComponent {
                 return 'This is not a correct URL.'
               }
             }}
+            required
           >
             Link:
           </Field>

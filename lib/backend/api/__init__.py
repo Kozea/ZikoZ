@@ -1,8 +1,8 @@
 from unrest import UnRest
 
 from .. import app, db
-from ..model import Color, Shape
+from ..model import Playlist, Tune
 
 rest = UnRest(app, db.session)
-color = rest(Color, methods=['GET', 'POST', 'PUT', 'DELETE'])
-shape = rest(Shape, methods=['GET', 'POST', 'PUT', 'DELETE'])
+playlist = rest(Playlist, methods=["GET", "POST", "PUT", "DELETE"])
+tune = rest(Tune, methods=["GET", "POST", "PUT", "DELETE"])

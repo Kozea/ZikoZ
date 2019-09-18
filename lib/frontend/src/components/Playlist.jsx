@@ -28,21 +28,18 @@ export default class Playlist extends React.PureComponent {
 
   render(b) {
     const { name, author, tunes } = this.props
-    var tunesList
 
-    if (!tunes) {
-      tunesList = []
-    }
-
-    tunesList = tunes.map(tune => (
-      <div key={tunes.indexOf(tune)}>
-        {tune.artist} - {tune.title}
-        {' - '}
-        <a href={tune.url} target="_blank" rel="noopener noreferrer">
-          Listen
-        </a>
-      </div>
-    ))
+    const tunesList = tunes.length
+      ? tunes.map(tune => (
+          <div key={tunes.indexOf(tune)}>
+            {tune.artist} - {tune.title}
+            {' - '}
+            <a href={tune.url} target="_blank" rel="noopener noreferrer">
+              Listen
+            </a>
+          </div>
+        ))
+      : []
 
     return (
       <div className={b.e('playlist')}>

@@ -7,11 +7,25 @@ import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
 
 import Playlist from './Playlist'
+import api from '../api'
 
 @withRouter
-@connect(state => ({ playlists: state.playlists }))
+@connect(
+  state => ({
+    playlist: state.api.playlist,
+    tune: state.api.tune,
+  }),
+  dispatch => ({
+    sync: () => Promise.all([dispatch(api.actions.playlist.get())]),
+  })
+)
 @block
 export default class Home extends React.PureComponent {
+  componentDidMount() {
+    const { sync } = this.props
+    sync()
+  }
+
   render(b) {
     const { playlists } = this.props
 
