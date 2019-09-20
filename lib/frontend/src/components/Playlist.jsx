@@ -5,12 +5,12 @@ import block from 'bemboo'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { deletePlaylist } from '../actions/index'
+import api from '../api'
 
 @connect(
   null,
   dispatch => ({
-    onDeletePlaylist: playlist => dispatch(deletePlaylist(playlist)),
+    onDeletePlaylist: id => dispatch(api.actions.playlist.deleteItem({ id })),
   })
 )
 @block
@@ -49,11 +49,8 @@ export default class Playlist extends React.PureComponent {
         <div>{tunesList}</div>
         <div className={b.e('options')}>
           <Link to={`/edit-playlist/${this.props.id}`} className={b.e('edit')}>
-            Edit
+            Edit the playlist
           </Link>
-          <span className={b.e('delete')} onClick={this.handleDelete}>
-            Delete
-          </span>
         </div>
       </div>
     )

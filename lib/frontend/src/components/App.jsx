@@ -10,6 +10,7 @@ import Home from './Home'
 import NotFound from './NotFound'
 import Link from './utils/Link'
 import PlaylistForm from './PlaylistForm'
+import PlaylistEdit from './PlaylistEdit'
 
 @block
 export default class App extends React.PureComponent {
@@ -39,7 +40,7 @@ export default class App extends React.PureComponent {
           <Redirect status={303} from="/old/date" to="/date" />
           <Route exact path="/" component={Home} />
           <Route path="/add-playlist" component={PlaylistForm} />
-          <Route path="/edit-playlist/:id" component={PlaylistForm} />
+          <Route path="/edit-playlist/:id" component={PlaylistEdit} />
           <Route component={NotFound} />
         </Switch>
       </main>

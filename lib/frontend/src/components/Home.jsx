@@ -12,11 +12,10 @@ import api from '../api'
 @withRouter
 @connect(
   state => ({
-    playlist: state.api.playlist,
-    tune: state.api.tune,
+    playlists: state.api.playlist,
   }),
   dispatch => ({
-    sync: () => Promise.all([dispatch(api.actions.playlist.get())]),
+    sync: () => dispatch(api.actions.playlist.get()),
   })
 )
 @block
@@ -29,27 +28,31 @@ export default class Home extends React.PureComponent {
   render(b) {
     const { playlists } = this.props
 
-    const listPlaylists = playlists.map(function(playlist) {
-      if (!playlist.tunes) {
+    const listPlaylists = playlists.loading ? (
+      <p>Chargement...</p>
+    ) : (
+      playlists.objects.map(function(playlist) {
+        if (!playlist.tunes) {
+          return (
+            <Playlist
+              key={playlist.id}
+              id={playlist.id}
+              name={playlist.name}
+              author={playlist.author}
+            />
+          )
+        }
         return (
           <Playlist
             key={playlist.id}
             id={playlist.id}
             name={playlist.name}
             author={playlist.author}
+            tunes={playlist.tunes}
           />
         )
-      }
-      return (
-        <Playlist
-          key={playlist.id}
-          id={playlist.id}
-          name={playlist.name}
-          author={playlist.author}
-          tunes={playlist.tunes}
-        />
-      )
-    })
+      })
+    )
 
     return (
       <section className={b}>
