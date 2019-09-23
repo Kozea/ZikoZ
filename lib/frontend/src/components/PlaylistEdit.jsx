@@ -16,13 +16,8 @@ import api from '../api'
     playlist: state.api.playlist,
   }),
   dispatch => ({
-    sync: id => dispatch(api.actions.playlist.force.getItem({ id })),
-    onDeletePlaylist: async id => {
-      const response = await dispatch(api.actions.playlist.deleteItem({ id }))
-      if (response.metadata.code === 200) {
-        dispatch(api.actions.playlist.force.get())
-      }
-    },
+    sync: () => dispatch(api.actions.playlist.force.get()),
+    onDeletePlaylist: id => dispatch(api.actions.playlist.deleteItem({ id })),
     onEditPlaylist: playlist =>
       dispatch(api.actions.playlist.patchItem({ id: playlist.id }, playlist)),
     onAddTune: async item => {
@@ -50,12 +45,18 @@ export default class PlaylistEdit extends React.PureComponent {
     this.handleAddClick = this.handleAddClick.bind(this)
     this.handleEditClick = this.handleEditClick.bind(this)
     this.handleDeletePlaylist = this.handleDeletePlaylist.bind(this)
-    this.handleAddTune = this.handleAddTune.bind(this)
   }
 
   componentDidMount() {
     const { id } = this.props.match.params
     this.props.sync(parseInt(id))
+  }
+
+  componentDidUpdate(prevProps) {
+    const { id } = this.props.match.params
+    if (prevProps.match.params.id !== id) {
+      this.props.sync(parseInt(id))
+    }
   }
 
   async handlePlaylistSubmit(item) {
@@ -68,12 +69,6 @@ export default class PlaylistEdit extends React.PureComponent {
     const { onDeletePlaylist } = this.props
     onDeletePlaylist(id)
     this.props.history.push('/')
-  }
-
-  async handleAddTune(item) {
-    const { onAddTune } = this.props
-    await onAddTune(item)
-    this.setState({ isAddingTune: false })
   }
 
   handleAddClick() {
@@ -94,8 +89,10 @@ export default class PlaylistEdit extends React.PureComponent {
 
     const { isAddingTune, isEditing } = this.state
 
+    const targetPlaylist = playlist.objects.filter(p => p.id === parseInt(id))
+
     const item =
-      !playlist.loading && playlist.objects.length ? playlist.objects[0] : {}
+      !playlist.loading && targetPlaylist.length ? targetPlaylist[0] : {}
 
     return (
       <section className={b}>
@@ -108,7 +105,7 @@ export default class PlaylistEdit extends React.PureComponent {
           </h2>
         </div>
         <div>
-          {playlist.loading || !playlist.objects.length ? (
+          {playlist.loading || !targetPlaylist.length ? (
             <div className={b.e('container')}>
               <div className="loader" />
             </div>
@@ -144,25 +141,28 @@ export default class PlaylistEdit extends React.PureComponent {
               <div className={b.e('container')}>
                 <Formol
                   item={item}
-                  onSubmit={tuneItem =>
-                    this.handleAddTune({
+                  onSubmit={async tuneItem => {
+                    await this.props.onAddTune({
                       ...tuneItem,
-                      playlistId: parseInt(id),
+                      playlistId: item.id,
                     })
-                  }
+                    this.setState({ isAddingTune: false })
+                  }}
                   submitText="Save changes"
                 >
-                  {Object.keys(item.tunes).length
-                    ? item.tunes.map(tune => (
-                        <TuneField
-                          key={tune.id}
-                          id={tune.id}
-                          formId={item.tunes.indexOf(tune)}
-                          onRemoveClick={tuneId =>
-                            this.props.onRemoveTune(tuneId, item.id)
-                          }
-                        />
-                      ))
+                  {item.tunes.length
+                    ? item.tunes
+                        .sort((x, y) => x.id - y.id)
+                        .map(tune => (
+                          <TuneField
+                            key={tune.id}
+                            id={tune.id}
+                            formId={item.tunes.indexOf(tune)}
+                            onRemoveClick={tuneId =>
+                              this.props.onRemoveTune(tuneId, item.id)
+                            }
+                          />
+                        ))
                     : !isAddingTune && (
                         <>
                           <p>Add your first tune:</p>
@@ -171,9 +171,14 @@ export default class PlaylistEdit extends React.PureComponent {
                       )}
                   {isAddingTune ? (
                     <div>
-                      <TuneField add />
+                      <TuneField
+                        onCancelClick={() =>
+                          this.setState({ isAddingTune: false })
+                        }
+                        add
+                      />
                     </div>
-                  ) : Object.keys(item.tunes).length ? (
+                  ) : item.tunes.length ? (
                     <p className={b.e('add')} onClick={this.handleAddClick}>
                       Add tune
                     </p>

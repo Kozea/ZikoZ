@@ -17,7 +17,7 @@ export default class Playlist extends React.PureComponent {
         <div>
           {tunes.length
             ? tunes.map(tune => (
-                <div key={tunes.indexOf(tune)}>
+                <div key={tune.id}>
                   {tune.artist} - {tune.title}
                   {' - '}
                   <a href={tune.url} target="_blank" rel="noopener noreferrer">
@@ -25,7 +25,7 @@ export default class Playlist extends React.PureComponent {
                   </a>
                 </div>
               ))
-            : []}
+            : null}
         </div>
         <div className={b.e('options')}>
           <Link to={`/edit-playlist/${this.props.id}`} className={b.e('edit')}>

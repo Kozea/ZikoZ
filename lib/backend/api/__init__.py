@@ -17,12 +17,10 @@ playlist_tune = rest(PlaylistTune, methods=["POST", "PUT", "DELETE"])
 
 @tune.declare("POST", True)
 def tune_post(payload, id=None):
-    global tune
-    global playlist
 
     playlist_id = payload["playlistId"]
-    new_tune_checker = set(payload["new"].values())
-    if None not in new_tune_checker:
+
+    if payload.get("new") is not None:
         new_tune = tune.post(payload["new"])["objects"][0]
         playlist_tune.post({"playlist_id": playlist_id, "tune_id": new_tune["id"]})
 

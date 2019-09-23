@@ -46,7 +46,15 @@ export default class TuneField extends React.PureComponent {
           >
             Link:
           </Field>
-          {add ? null : (
+          {add ? (
+            <div className={b.e('remove-container')}>
+              <hr />
+              <hr />
+              <p className={b.e('cancel')} onClick={this.props.onCancelClick}>
+                cancel
+              </p>
+            </div>
+          ) : (
             <div className={b.e('remove-container')}>
               <hr />
               <hr />
