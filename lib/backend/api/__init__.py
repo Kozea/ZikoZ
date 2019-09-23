@@ -7,7 +7,10 @@ rest = UnRest(app, db.session)
 
 tune = rest(Tune, methods=["GET", "POST", "PUT", "DELETE", "PATCH"], allow_batch=True)
 playlist = rest(
-    Playlist, methods=["GET", "POST", "DELETE", "PATCH"], relationships={"tunes": tune}
+    Playlist,
+    methods=["GET", "POST", "DELETE", "PATCH"],
+    query=lambda q: q.order_by(Playlist.id),
+    relationships={"tunes": tune},
 )
 playlist_tune = rest(PlaylistTune, methods=["POST", "PUT", "DELETE"])
 
