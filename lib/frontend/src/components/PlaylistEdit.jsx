@@ -108,8 +108,10 @@ export default class PlaylistEdit extends React.PureComponent {
           </h2>
         </div>
         <div>
-          {playlist.loading ? (
-            <h1>Chargement...</h1>
+          {playlist.loading || !playlist.objects.length ? (
+            <div className={b.e('container')}>
+              <div className="loader" />
+            </div>
           ) : (
             <>
               {isEditing ? (
