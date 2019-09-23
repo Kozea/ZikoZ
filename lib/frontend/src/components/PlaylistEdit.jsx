@@ -150,7 +150,7 @@ export default class PlaylistEdit extends React.PureComponent {
                       playlistId: parseInt(id),
                     })
                   }
-                  submitText="Add tune"
+                  submitText="Save changes"
                 >
                   {Object.keys(item.tunes).length
                     ? item.tunes.map(tune => (
@@ -163,16 +163,21 @@ export default class PlaylistEdit extends React.PureComponent {
                           }
                         />
                       ))
-                    : !isAddingTune && <p>There is no tunes...</p>}
+                    : !isAddingTune && (
+                        <>
+                          <p>Add your first tune:</p>
+                          <TuneField add />
+                        </>
+                      )}
                   {isAddingTune ? (
                     <div>
                       <TuneField add />
                     </div>
-                  ) : (
+                  ) : Object.keys(item.tunes).length ? (
                     <p className={b.e('add')} onClick={this.handleAddClick}>
                       Add tune
                     </p>
-                  )}
+                  ) : null}
                 </Formol>
               </div>
               <div className={b.e('container')}>
