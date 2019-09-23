@@ -13,13 +13,7 @@ import api from '../api'
 @connect(
   null,
   dispatch => ({
-    onCreatePlaylist: async playlist => {
-      const response = await dispatch(api.actions.playlist.post(playlist))
-      if (response.metadata.code === 200) {
-        dispatch(api.actions.playlist.force.get())
-      }
-      return response
-    },
+    onCreatePlaylist: playlist => dispatch(api.actions.playlist.post(playlist)),
   })
 )
 @block
@@ -34,7 +28,6 @@ export default class PlaylistForm extends React.PureComponent {
     const { onCreatePlaylist } = this.props
 
     const response = await onCreatePlaylist(item)
-    debugger
     this.props.history.push(`/edit-playlist/${response.objects[0].id}`)
   }
 

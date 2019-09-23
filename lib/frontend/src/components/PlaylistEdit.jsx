@@ -16,21 +16,15 @@ import api from '../api'
     playlist: state.api.playlist,
   }),
   dispatch => ({
-    sync: id => dispatch(api.actions.playlist.getItem({ id })),
+    sync: id => dispatch(api.actions.playlist.force.getItem({ id })),
     onDeletePlaylist: async id => {
       const response = await dispatch(api.actions.playlist.deleteItem({ id }))
       if (response.metadata.code === 200) {
         dispatch(api.actions.playlist.force.get())
       }
     },
-    onEditPlaylist: async playlist => {
-      const response = await dispatch(
-        api.actions.playlist.patchItem({ id: playlist.id }, playlist)
-      )
-      if (response.metadata.code === 200) {
-        dispatch(api.actions.playlist.force.get())
-      }
-    },
+    onEditPlaylist: playlist =>
+      dispatch(api.actions.playlist.patchItem({ id: playlist.id }, playlist)),
     onAddTune: async item => {
       const response = await dispatch(api.actions.tune.post(item))
       if (response.metadata.code === 200) {
@@ -56,6 +50,7 @@ export default class PlaylistEdit extends React.PureComponent {
     this.handleAddClick = this.handleAddClick.bind(this)
     this.handleEditClick = this.handleEditClick.bind(this)
     this.handleDeletePlaylist = this.handleDeletePlaylist.bind(this)
+    this.handleAddTune = this.handleAddTune.bind(this)
   }
 
   componentDidMount() {
@@ -73,6 +68,12 @@ export default class PlaylistEdit extends React.PureComponent {
     const { onDeletePlaylist } = this.props
     onDeletePlaylist(id)
     this.props.history.push('/')
+  }
+
+  async handleAddTune(item) {
+    const { onAddTune } = this.props
+    await onAddTune(item)
+    this.setState({ isAddingTune: false })
   }
 
   handleAddClick() {
@@ -142,7 +143,7 @@ export default class PlaylistEdit extends React.PureComponent {
                 <Formol
                   item={item}
                   onSubmit={tuneItem =>
-                    this.props.onAddTune({
+                    this.handleAddTune({
                       ...tuneItem,
                       playlistId: parseInt(id),
                     })

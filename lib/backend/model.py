@@ -25,6 +25,8 @@ class Playlist(Base):
         "Tune", secondary=PlaylistTune.__table__, back_populates="playlists"
     )
 
+    __mapper_args__ = {"order_by": id}
+
 
 class Tune(Base):
     __tablename__ = "tune"
