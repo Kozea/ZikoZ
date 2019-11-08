@@ -19,3 +19,4 @@ base.Makefile
 config.custom.Makefile
 .venv
 .vscode
+coverage/
